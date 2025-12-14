@@ -3,7 +3,7 @@ import { ShopContext } from '../../Context/ShopContext';
 import CryptoJS from "crypto-js";
 import { v4 as uuidv4 } from 'uuid';
 import API from '../../API';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CartItems = () => {
     const { allProducts, cartItems, removeFromCart, getTotalAmount } = useContext(ShopContext);
@@ -68,72 +68,96 @@ const CartItems = () => {
     };
 
     return (
-        <div className='p-5 flex flex-col items-center'>
-            <table className='w-3/4'>
-                <thead>
-                    <tr className='border-b-2 font-[Poppins]'>
-                        <th className='p-5 text-left'>Products</th>
-                        <th className='p-5 text-left'>Title</th>
-                        <th className='p-5 text-left'>Price</th>
-                        <th className='p-5 text-left'>Quantity</th>
-                        <th className='p-5 text-left'>Size</th>
-                        <th className='p-5 text-left'>Total</th>
-                        <th className='p-5 text-left'>Remove</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Object.entries(cartItems).map(([key, item]) => {
-                        if (item.quantity > 0) {
-                            // Extract productId and size from key
-                            const [productId, ...sizeParts] = key.split('_');
-                            const size = sizeParts.join('_');
-                            const product = allProducts.find(p => p._id === productId);
-                            if (!product) return null;
-                            return (
-                                <tr className='border-b-2' key={key}>
-                                    <td className='p-5'>
-                                        <img src={Array.isArray(product.image) ? product.image[0] : product.image} alt={product.name} className='w-10 h-10' />
-                                    </td>
-                                    <td className='p-5'>{product.name}</td>
-                                    <td className='p-5'>Rs.{product.new_price}</td>
-                                    <td className='p-5 text-center'>{item.quantity}</td>
-                                    <td className='p-5 text-center'>{size || '-'}</td>
-                                    <td className='p-5'>Rs.{product.new_price * item.quantity}</td>
-                                    <td className='p-5 text-center text-2xl text-red-600'>
-                                        <i onClick={() => { removeFromCart(key) }} className='fa-solid fa-trash cursor-pointer'></i>
-                                    </td>
-                                </tr>
-                            );
-                        }
-                        return null;
-                    })}
-                </tbody>
-            </table>
+        <div className='flex flex-col items-center w-full'>
+            {Object.values(cartItems).some(item => item.quantity > 0) ? (
+              <>
+                <div className='w-full overflow-x-auto custom-scrollbar'>
+                  <table className='w-full bg-white rounded-2xl shadow-soft overflow-hidden'>
+                      <thead className='bg-gradient-to-r from-orange-600 to-red-600 text-white'>
+                          <tr>
+                              <th className='p-4 text-left font-bold'>Product</th>
+                              <th className='p-4 text-left font-bold hidden md:table-cell'>Title</th>
+                              <th className='p-4 text-left font-bold'>Price</th>
+                              <th className='p-4 text-left font-bold'>Quantity</th>
+                              <th className='p-4 text-left font-bold hidden lg:table-cell'>Size</th>
+                              <th className='p-4 text-left font-bold'>Total</th>
+                              <th className='p-4 text-center font-bold'>Remove</th>
+                          </tr>
+                      </thead>
+                      <tbody className='divide-y divide-gray-100'>
+                          {Object.entries(cartItems).map(([key, item]) => {
+                              if (item.quantity > 0) {
+                                  // Extract productId and size from key
+                                  const [productId, ...sizeParts] = key.split('_');
+                                  const size = sizeParts.join('_');
+                                  const product = allProducts.find(p => p._id === productId);
+                                  if (!product) return null;
+                                  return (
+                                      <tr className='hover:bg-orange-50 transition-colors duration-150' key={key}>
+                                          <td className='p-4'>
+                                              <div className='flex items-center gap-3'>
+                                                  <img 
+                                                      src={Array.isArray(product.image) ? product.image[0] : product.image} 
+                                                      alt={product.name} 
+                                                      className='w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg shadow-md' 
+                                                  />
+                                                  <span className='md:hidden font-semibold text-gray-800'>{product.name}</span>
+                                              </div>
+                                          </td>
+                                          <td className='p-4 hidden md:table-cell'>
+                                              <span className='font-semibold text-gray-800'>{product.name}</span>
+                                          </td>
+                                          <td className='p-4'>
+                                              <span className='font-bold text-orange-600'>Rs. {product.new_price}</span>
+                                          </td>
+                                          <td className='p-4'>
+                                              <span className='inline-block px-3 py-1 bg-gray-100 rounded-lg font-semibold'>{item.quantity}</span>
+                                          </td>
+                                          <td className='p-4 hidden lg:table-cell'>
+                                              <span className='text-gray-600'>{size || '-'}</span>
+                                          </td>
+                                          <td className='p-4'>
+                                              <span className='font-bold text-gray-800'>Rs. {product.new_price * item.quantity}</span>
+                                          </td>
+                                          <td className='p-4 text-center'>
+                                              <button
+                                                  onClick={() => { removeFromCart(key) }}
+                                                  className='w-10 h-10 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center'
+                                                  aria-label="Remove item"
+                                              >
+                                                  <i className='fa-solid fa-trash text-sm'></i>
+                                              </button>
+                                          </td>
+                                      </tr>
+                                  );
+                              }
+                              return null;
+                          })}
+                      </tbody>
+                  </table>
+                </div>
 
-            {/* Cart Total Section */}
-            {Object.values(cartItems).some(item => item.quantity > 0) && (
-                <div className='w-3/4 mt-10'>
-                    <h1 className='text-xl font-bold font-[Poppins]'>Cart Total</h1>
-                    <table className='w-1/2'>
-                        <tbody>
-                            <tr>
-                                <td className='p-3 pl-0 text-left'>Subtotal</td>
-                                <td className='p-3 pl-20 text-right'>Rs.{amount}</td>
-                            </tr>
-                            <tr>
-                                <td className='p-3 pl-0 text-left'>Tax</td>
-                                <td className='p-3 pl-20 text-right'>Rs.{tax}</td>
-                            </tr>
-                            <tr className='border-b-4'>
-                                <td className='p-3 pl-0 text-left'>Shipping Fee</td>
-                                <td className='p-3 pl-20 text-right'>Free</td>
-                            </tr>
-                            <tr>
-                                <th className='p-3 pl-0 text-left'>Total</th>
-                                <td className='p-3 pl-20 text-right'>Rs.{totalamount}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                {/* Cart Total Section */}
+                <div className='w-full max-w-2xl mt-10 bg-white rounded-2xl shadow-soft p-6 lg:p-8'>
+                    <h1 className='text-2xl font-bold mb-6 text-gray-800 border-b border-gray-200 pb-3'>Cart Summary</h1>
+                    <div className='space-y-4 mb-6'>
+                        <div className='flex justify-between items-center py-2'>
+                            <span className='text-gray-600 font-medium'>Subtotal</span>
+                            <span className='text-gray-800 font-semibold text-lg'>Rs. {amount.toLocaleString()}</span>
+                        </div>
+                        <div className='flex justify-between items-center py-2'>
+                            <span className='text-gray-600 font-medium'>Tax (10%)</span>
+                            <span className='text-gray-800 font-semibold text-lg'>Rs. {tax.toLocaleString()}</span>
+                        </div>
+                        <div className='flex justify-between items-center py-2 border-b-2 border-gray-200 pb-4'>
+                            <span className='text-gray-600 font-medium'>Shipping Fee</span>
+                            <span className='text-green-600 font-semibold'>Free</span>
+                        </div>
+                        <div className='flex justify-between items-center pt-2'>
+                            <span className='text-xl font-bold text-gray-800'>Total</span>
+                            <span className='text-2xl font-extrabold text-orange-600'>Rs. {totalamount.toLocaleString()}</span>
+                        </div>
+                    </div>
 
                     <form ref={formRef} action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
                         <input type="hidden" id="amount" name="amount" value={amount} required />
@@ -147,43 +171,107 @@ const CartItems = () => {
                         <input type="hidden" id="failure_url" name="failure_url" value="http://localhost:5173/failure" required />
                         <input type="hidden" id="signed_field_names" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required />
                         <input type="hidden" id="signature" name="signature" value={signature} required />
-                        <button
-                            className='bg-orange-700 px-5 py-3 text-xl mt-10 text-white font-medium rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-orange-500 transition-all'
-                            onClick={handleOrderAndPay}
-                            disabled={isProcessing}
-                            type="button"
-                        >
-                            {isProcessing ? 'Processing...' : 'Proceed To Checkout'}
-                        </button>
+                    <button
+                        className='w-full bg-gradient-to-r from-orange-600 to-red-600 px-6 py-4 text-lg text-white font-bold rounded-xl hover:from-orange-700 hover:to-red-700 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
+                        onClick={handleOrderAndPay}
+                        disabled={isProcessing}
+                        type="button"
+                    >
+                        {isProcessing ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <svg className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Processing...
+                            </span>
+                        ) : (
+                            'Proceed To Checkout'
+                        )}
+                    </button>
                     </form>
                     {showShippingForm && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-                            <form onSubmit={handleShippingSubmit} className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-                                <h2 className="text-xl font-bold mb-4">Shipping Details</h2>
-                                <div className="mb-3">
-                                    <input name="name" value={shipping.name} onChange={handleShippingChange} placeholder="Full Name" className="w-full border p-2 rounded" />
-                                    {shippingErrors.name && <p className="text-red-500 text-sm">{shippingErrors.name}</p>}
+                        <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 animate-fade-in">
+                            <form onSubmit={handleShippingSubmit} className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md animate-scale-in">
+                                <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b border-gray-200 pb-3">Shipping Details</h2>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                                        <input 
+                                            name="name" 
+                                            value={shipping.name} 
+                                            onChange={handleShippingChange} 
+                                            placeholder="Enter your full name" 
+                                            className="w-full border-2 border-gray-200 p-3 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200" 
+                                        />
+                                        {shippingErrors.name && <p className="text-red-500 text-sm mt-1">{shippingErrors.name}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                                        <input 
+                                            name="phone" 
+                                            value={shipping.phone} 
+                                            onChange={handleShippingChange} 
+                                            placeholder="10-digit phone number" 
+                                            className="w-full border-2 border-gray-200 p-3 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200" 
+                                        />
+                                        {shippingErrors.phone && <p className="text-red-500 text-sm mt-1">{shippingErrors.phone}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-2">Address</label>
+                                        <input 
+                                            name="address" 
+                                            value={shipping.address} 
+                                            onChange={handleShippingChange} 
+                                            placeholder="Street address" 
+                                            className="w-full border-2 border-gray-200 p-3 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200" 
+                                        />
+                                        {shippingErrors.address && <p className="text-red-500 text-sm mt-1">{shippingErrors.address}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-2">City</label>
+                                        <input 
+                                            name="city" 
+                                            value={shipping.city} 
+                                            onChange={handleShippingChange} 
+                                            placeholder="City name" 
+                                            className="w-full border-2 border-gray-200 p-3 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200" 
+                                        />
+                                        {shippingErrors.city && <p className="text-red-500 text-sm mt-1">{shippingErrors.city}</p>}
+                                    </div>
                                 </div>
-                                <div className="mb-3">
-                                    <input name="phone" value={shipping.phone} onChange={handleShippingChange} placeholder="Phone Number" className="w-full border p-2 rounded" />
-                                    {shippingErrors.phone && <p className="text-red-500 text-sm">{shippingErrors.phone}</p>}
-                                </div>
-                                <div className="mb-3">
-                                    <input name="address" value={shipping.address} onChange={handleShippingChange} placeholder="Address" className="w-full border p-2 rounded" />
-                                    {shippingErrors.address && <p className="text-red-500 text-sm">{shippingErrors.address}</p>}
-                                </div>
-                                <div className="mb-3">
-                                    <input name="city" value={shipping.city} onChange={handleShippingChange} placeholder="City" className="w-full border p-2 rounded" />
-                                    {shippingErrors.city && <p className="text-red-500 text-sm">{shippingErrors.city}</p>}
-                                </div>
-                                <div className="flex gap-2 mt-4">
-                                    <button type="submit" className="bg-orange-700 text-white px-4 py-2 rounded">Continue to Payment</button>
-                                    <button type="button" className="bg-gray-400 text-white px-4 py-2 rounded" onClick={() => setShowShippingForm(false)}>Cancel</button>
+                                <div className="flex gap-3 mt-6">
+                                    <button 
+                                        type="submit" 
+                                        className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg"
+                                    >
+                                        Continue to Payment
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transform hover:scale-105 active:scale-95 transition-all duration-200" 
+                                        onClick={() => setShowShippingForm(false)}
+                                    >
+                                        Cancel
+                                    </button>
                                 </div>
                             </form>
                         </div>
                     )}
                 </div>
+              </>
+            ) : (
+              <div className="w-full max-w-2xl mt-10 bg-white rounded-2xl shadow-soft p-12 text-center">
+                <div className="text-6xl mb-4">🛒</div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">Your cart is empty</h2>
+                <p className="text-gray-600 mb-6">Start adding items to your cart!</p>
+                <Link 
+                  to="/masks" 
+                  className="inline-block bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
+                >
+                  Continue Shopping
+                </Link>
+              </div>
             )}
         </div>
     );

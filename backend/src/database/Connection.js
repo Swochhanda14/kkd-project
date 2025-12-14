@@ -4,13 +4,17 @@ dotenv.config();
 
 class Connection{
     constructor(){
-        try{
-            mongoose.connect(process.env.DB_URL);
-            console.log("Database connected succesfully");
-        }catch(err){
-            console.log("Error connecting to database");
-            console.log(err);
-        }
+        const connectDB = async () => {
+            try{
+                const conn = await mongoose.connect(process.env.DB_URL);
+                console.log(`Database connected successfully: ${conn.connection.host}`);
+            }catch(err){
+                console.log("Error connecting to database");
+                console.log(err.message);
+                process.exit(1);
+            }
+        };
+        connectDB();
     }
 }
 

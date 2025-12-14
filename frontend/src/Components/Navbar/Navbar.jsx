@@ -48,66 +48,78 @@ const Navbar = () => {
      ${location.pathname === path ? 'after:scale-x-100' : ''}`;
 
   return (
-    <nav className="sticky top-0 z-30 bg-gradient-to-r from-orange-800 to-red-700/90 text-white backdrop-blur supports-[backdrop-filter]:bg-orange-800/80">
-      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <nav className="sticky top-0 z-30 bg-gradient-to-r from-orange-700 via-orange-600 to-red-600 text-white shadow-lg backdrop-blur-md supports-[backdrop-filter]:bg-orange-700/95 border-b border-orange-500/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center">
-          <img src={logo} alt="Karigar Ko Dukaan" className="w-12 h-12 p-1" />
+        <Link to="/" className="flex items-center group">
+          <div className="relative">
+            <img src={logo} alt="Karigar Ko Dukaan" className="w-14 h-14 p-1.5 transition-transform duration-300 group-hover:scale-110" />
+            <div className="absolute inset-0 bg-white/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </div>
+          <span className="ml-2 text-xl font-bold hidden sm:block font-poppins">Karigar Ko Dukaan</span>
         </Link>
 
         <button
-          className="md:hidden flex items-center justify-center w-10 h-10 rounded-md bg-white/10 hover:bg-white/20 transition"
+          className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 active:scale-95"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle navigation"
         >
-          {mobileOpen ? <FaTimes /> : <FaBars />}
+          {mobileOpen ? <FaTimes className="text-xl" /> : <FaBars className="text-xl" />}
         </button>
 
-        <ul className="hidden md:flex space-x-6 uppercase">
+        <ul className="hidden md:flex space-x-1 lg:space-x-2 uppercase font-semibold text-sm lg:text-base">
           {navLinks.map(({ path, label }) => (
             <li key={path}>
-              <Link to={path} className={getLinkClass(path)}>
+              <Link to={path} className={`${getLinkClass(path)} px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-200`}>
                 {label}
               </Link>
             </li>
           ))}
         </ul>
 
-        <div className="hidden lg:flex items-center">
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="px-3 py-2 rounded-l-lg outline-none text-black w-56 focus:ring-2 focus:ring-orange-400"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') handleSearch();
-            }}
-          />
+        <div className="hidden lg:flex items-center gap-2">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="px-4 py-2.5 rounded-l-xl outline-none text-gray-800 w-64 focus:ring-2 focus:ring-white/50 focus:bg-white transition-all duration-200 shadow-md"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') handleSearch();
+              }}
+            />
+          </div>
           <button
-            className="bg-white text-orange-800 px-4 py-2 rounded-r-lg font-semibold hover:bg-orange-100 transition"
+            className="bg-white text-orange-700 px-5 py-2.5 rounded-r-xl font-semibold hover:bg-orange-50 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg"
             onClick={handleSearch}
           >
             Search
           </button>
         </div>
 
-        <div className="flex items-center space-x-6 relative">
+        <div className="flex items-center space-x-4 lg:space-x-6 relative">
         {userInfo ? (
           <div className="relative">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center space-x-2 focus:outline-none"
+              className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-200 focus:outline-none"
               aria-label="User menu"
             >
-              <FaUser className="text-xl" />
-              <span>Hello, {userInfo.name?.split(' ')[0]}</span>
+              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                <FaUser className="text-sm" />
+              </div>
+              <span className="hidden lg:inline font-medium">Hello, {userInfo.name?.split(' ')[0]}</span>
             </button>
             {showDropdown && (
-              <div className="absolute right-0 mt-2 w-40 bg-white text-black shadow-md rounded-md z-10">
+              <div className="absolute right-0 mt-2 w-48 bg-white text-gray-800 shadow-xl rounded-xl z-10 overflow-hidden border border-gray-100 animate-slide-down">
+                <div className="px-4 py-2 border-b border-gray-100">
+                  <p className="text-sm font-semibold">{userInfo.name}</p>
+                  <p className="text-xs text-gray-500">{userInfo.email}</p>
+                </div>
                 <button
                   onClick={logoutHandler}
-                  className="block w-full px-4 py-2 text-left hover:bg-orange-100"
+                  className="block w-full px-4 py-3 text-left hover:bg-orange-50 text-red-600 font-medium transition-colors duration-150"
                 >
                   Logout
                 </button>
@@ -117,32 +129,36 @@ const Navbar = () => {
         ) : (
           <Link
             to="/login"
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-200"
           >
-            <FaUser className="text-xl" />
-            <span>Login</span>
+            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+              <FaUser className="text-sm" />
+            </div>
+            <span className="hidden lg:inline font-medium">Login</span>
           </Link>
         )}
 
-        <Link to="/cart" className="relative flex items-center space-x-2">
-          <FaShoppingCart className="text-xl" />
-          <span>Cart</span>
-          {getTotalCartItems() > 0 && (
-            <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-semibold w-5 h-5 rounded-full flex items-center justify-center shadow-md">
-              {getTotalCartItems()}
-            </span>
-          )}
+        <Link to="/cart" className="relative flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-200 group">
+          <div className="relative">
+            <FaShoppingCart className="text-xl group-hover:scale-110 transition-transform duration-200" />
+            {getTotalCartItems() > 0 && (
+              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounce-slow">
+                {getTotalCartItems()}
+              </span>
+            )}
+          </div>
+          <span className="hidden lg:inline font-medium">Cart</span>
         </Link>
         </div>
       </div>
       {mobileOpen && (
-        <div className="md:hidden bg-orange-900/95 backdrop-blur px-6 pb-4">
-          <div className="flex flex-col gap-3 pt-2">
-            <div className="flex">
+        <div className="md:hidden bg-gradient-to-b from-orange-800 to-orange-900 backdrop-blur-lg px-6 pb-6 border-t border-orange-500/20 animate-slide-down">
+          <div className="flex flex-col gap-4 pt-4">
+            <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Search products..."
-                className="px-3 py-2 rounded-l-lg outline-none text-black w-full focus:ring-2 focus:ring-orange-400"
+                className="px-4 py-2.5 rounded-l-xl outline-none text-gray-800 w-full focus:ring-2 focus:ring-white/50 shadow-md"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 onKeyDown={e => {
@@ -150,32 +166,36 @@ const Navbar = () => {
                 }}
               />
               <button
-                className="bg-white text-orange-800 px-4 py-2 rounded-r-lg font-semibold hover:bg-orange-100 transition"
+                className="bg-white text-orange-700 px-5 py-2.5 rounded-r-xl font-semibold hover:bg-orange-50 active:scale-95 transition-all duration-200 shadow-md"
                 onClick={handleSearch}
               >
                 Search
               </button>
             </div>
-            <ul className="grid grid-cols-2 gap-2 uppercase">
+            <ul className="grid grid-cols-2 gap-2 uppercase font-semibold">
               {navLinks.map(({ path, label }) => (
                 <li key={path}>
-                  <Link to={path} className="block px-3 py-2 rounded-md hover:bg-white/10" onClick={() => setMobileOpen(false)}>
+                  <Link 
+                    to={path} 
+                    className={`block px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 ${location.pathname === path ? 'bg-white/10' : ''}`} 
+                    onClick={() => setMobileOpen(false)}
+                  >
                     {label}
                   </Link>
                 </li>
               ))}
               <li>
-                <Link to="/cart" className="block px-3 py-2 rounded-md hover:bg-white/10" onClick={() => setMobileOpen(false)}>
+                <Link to="/cart" className="block px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-200" onClick={() => setMobileOpen(false)}>
                   Cart
                 </Link>
               </li>
               <li>
                 {userInfo ? (
-                  <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10" onClick={logoutHandler}>
+                  <button className="w-full text-left px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-200" onClick={logoutHandler}>
                     Logout
                   </button>
                 ) : (
-                  <Link to="/login" className="block px-3 py-2 rounded-md hover:bg-white/10" onClick={() => setMobileOpen(false)}>
+                  <Link to="/login" className="block px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-200" onClick={() => setMobileOpen(false)}>
                     Login
                   </Link>
                 )}

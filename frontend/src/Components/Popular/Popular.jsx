@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Item from '../Item/Item';
 import API from '../../API.jsx'
+import Loading from '../Loading/Loading';
+import { ProductGridSkeleton } from '../Loading/LoadingSkeleton';
 
 const Popular = () => {
   const [products, setProducts] = useState([]);
@@ -21,13 +23,40 @@ const Popular = () => {
     fetchRecommended();
   }, []);
   console.log(products);
-  if (loading) return <div className="text-center mt-20">Loading...</div>;
-  if (error) return <div className="text-center mt-20 text-red-500">{error}</div>;
+  
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-20 mb-16 px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-3 gradient-text">Popular Right Now</h1>
+          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent mx-auto mb-2"></div>
+          <p className="text-gray-600 text-lg">Handpicked favorites from our collection</p>
+        </div>
+        <ProductGridSkeleton count={8} />
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-20 mb-16 px-4 sm:px-6 lg:px-8">
+        <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-8 text-center max-w-md">
+          <div className="text-5xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-red-800 mb-2">Error</h2>
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center mt-20">
-      <h1 className="text-3xl md:text-4xl font-semibold">Popular Right Now</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mt-10 px-6 md:px-10">
+    <div className="flex flex-col items-center justify-center mt-20 mb-16 px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-extrabold mb-3 gradient-text">Popular Right Now</h1>
+        <div className="w-24 h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent mx-auto mb-2"></div>
+        <p className="text-gray-600 text-lg">Handpicked favorites from our collection</p>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 w-full max-w-7xl">
         {products.map((item, i) => (
           <Item
             key={item._id || i}

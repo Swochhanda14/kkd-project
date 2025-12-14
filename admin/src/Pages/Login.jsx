@@ -28,46 +28,64 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <main className="mx-auto flex flex-col gap-20 min-h-screen w-full items-center bg-gray-900 text-white">
-        <div className="m-20 h-10 flex items-center gap-3">
-          <img src={logo} alt="" className="h-full" />
-          <p className="text-white font-semibold text-2xl font-[Poppins]">Karigar Ko Dukaan</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900 flex items-center justify-center p-4">
+      <main className="w-full max-w-md">
+        <div className="mb-12 flex items-center justify-center gap-3">
+          <img src={logo} alt="Logo" className="h-12 mix-blend-screen" />
+          <p className="text-white font-bold text-2xl font-poppins">Karigar Ko Dukaan</p>
         </div>
-        {error && <div className="text-red-500 text-center">{error}</div>}
-        <form onSubmit={handleSubmit} className="flex w-[30rem] flex-col space-y-10">
-          <div className="text-center text-4xl font-medium">Admin Login</div>
-
-          <div className="w-full transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-indigo-500">
-            <input
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="w-full border-none bg-transparent outline-none placeholder:italic focus:outline-none"
-            />
-          </div>
-
-          <div className="w-full transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-indigo-500">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="w-full border-none bg-transparent outline-none placeholder:italic focus:outline-none"
-            />
-          </div>
-
-          <button type="submit" className="transform rounded-sm bg-indigo-600 py-2 font-bold duration-300 hover:bg-indigo-400">
-            LOG IN
-          </button>
-
+        
+        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-10 shadow-2xl border border-white/20">
+          {error && (
+            <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-200 text-center">
+              {error}
+            </div>
+          )}
           
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
+            <div className="text-center mb-6">
+              <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2">Admin Login</h1>
+              <p className="text-gray-300">Access your admin dashboard</p>
+            </div>
 
-          <a href="#" className="transform text-center font-semibold text-gray-500 duration-300 hover:text-gray-300">
-            FORGOT PASSWORD?
-          </a>
-        </form>
+            <div>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">Email</label>
+              <div className="w-full transform border-2 border-white/20 rounded-xl bg-white/5 backdrop-blur-sm text-lg duration-300 focus-within:border-indigo-400 focus-within:bg-white/10">
+                <input
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="w-full px-4 py-3 border-none bg-transparent outline-none placeholder:text-gray-400 text-white focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">Password</label>
+              <div className="w-full transform border-2 border-white/20 rounded-xl bg-white/5 backdrop-blur-sm text-lg duration-300 focus-within:border-indigo-400 focus-within:bg-white/10">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full px-4 py-3 border-none bg-transparent outline-none placeholder:text-gray-400 text-white focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              className="w-full transform rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-4 font-bold text-lg text-white duration-300 hover:from-indigo-700 hover:to-purple-700 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl transition-all"
+            >
+              LOG IN
+            </button>
+
+            <a href="#" className="transform text-center font-semibold text-gray-400 duration-300 hover:text-white text-sm">
+              FORGOT PASSWORD?
+            </a>
+          </form>
+        </div>
       </main>
     </div>
   );

@@ -187,10 +187,9 @@ class UserController {
     // @route   DELETE /api/users/:id
     async destroy(req, res) {
         try {
-            const user = await User.findById(req.params.id);
+            const user = await User.findByIdAndDelete(req.params.id);
 
             if (user) {
-                await user.remove();
                 res.status(200).json({ message: "User deleted successfully" });
             } else {
                 res.status(404).json({ message: "User not found" });

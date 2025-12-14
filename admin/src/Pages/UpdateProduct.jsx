@@ -110,13 +110,16 @@ const UpdateProduct = () => {
   };
 
   return (
-    <div className="flex gap-5">
+    <div className="flex gap-5 min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30">
       <Sidebar />
-      <div className="p-5">
-        <h1 className="text-2xl font-bold font-inter text-gray-800">Update Product</h1>
-        <div className="flex gap-10">
-          <div className="bg-white border-4 rounded-lg shadow mt-7">
-            <div className="p-6">
+      <div className="p-6 lg:p-8 w-full">
+        <div className="mb-8">
+          <h1 className="text-3xl font-extrabold font-inter text-gray-800 mb-2">Update Product</h1>
+          <p className="text-gray-600">Edit product information</p>
+        </div>
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="bg-white rounded-2xl shadow-soft border border-gray-100 flex-1">
+            <div className="p-6 md:p-8">
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-6 gap-6">
                   <div className="col-span-6 sm:col-span-3">
@@ -127,7 +130,7 @@ const UpdateProduct = () => {
                       type="text"
                       name="name"
                       id="name"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                      className="border-2 border-gray-200 rounded-xl text-gray-900 sm:text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 block w-full p-3 transition-all duration-200"
                       required
                     />
                   </div>
@@ -138,7 +141,7 @@ const UpdateProduct = () => {
                       onChange={inputChangeHandler}
                       value={product.categoryId || ""}
                       id="categoryId"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                      className="border-2 border-gray-200 rounded-xl text-gray-900 sm:text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 block w-full p-3 transition-all duration-200"
                       required
                     >
                       {categories && categories.map((cat) => (
@@ -155,7 +158,7 @@ const UpdateProduct = () => {
                       name="old_price"
                       id="old_price"
                       min={1}
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                      className="border-2 border-gray-200 rounded-xl text-gray-900 sm:text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 block w-full p-3 transition-all duration-200"
                       required
                     />
                   </div>
@@ -168,7 +171,7 @@ const UpdateProduct = () => {
                       value={product.new_price || ""}
                       id="new_price"
                       min={1}
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                      className="border-2 border-gray-200 rounded-xl text-gray-900 sm:text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 block w-full p-3 transition-all duration-200"
                       required
                     />
                   </div>
@@ -181,7 +184,7 @@ const UpdateProduct = () => {
                       value={product.quantity || ""}
                       id="quantity"
                       min={1}
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                      className="border-2 border-gray-200 rounded-xl text-gray-900 sm:text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 block w-full p-3 transition-all duration-200"
                       required
                     />
                   </div>
@@ -192,7 +195,7 @@ const UpdateProduct = () => {
                         id="image"
                         type="file"
                         name="image"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                        className="border-2 border-gray-200 rounded-xl text-gray-900 sm:text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 block w-full p-3 transition-all duration-200"
                         onChange={handleImageChange}
                       />
                     </div>
@@ -205,18 +208,18 @@ const UpdateProduct = () => {
                         id="sizes"
                         value={sizeInput}
                         onChange={e => setSizeInput(e.target.value)}
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                        className="border-2 border-gray-200 rounded-xl text-gray-900 sm:text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 block w-full p-3 transition-all duration-200"
                         placeholder="Enter size (e.g. S, M, L, XL)"
                       />
                       <button
                         onClick={handleAddSize}
-                        className="bg-cyan-600 text-white px-3 py-2 rounded-lg hover:bg-cyan-700"
+                        className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold"
                         type="button"
                       >Add</button>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {sizes.map((size, idx) => (
-                        <span key={idx} className="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full flex items-center">
+                        <span key={idx} className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full flex items-center text-sm font-semibold">
                           {size}
                           <button type="button" className="ml-2 text-red-500 hover:text-red-700" onClick={() => handleRemoveSize(size)}>&times;</button>
                         </span>
@@ -237,7 +240,7 @@ const UpdateProduct = () => {
                 </div>
                 <div className="p-6 border-t border-gray-200 rounded-b">
                   <button
-                    className="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 focus:ring-4 focus:ring-indigo-200 font-semibold rounded-xl text-sm px-8 py-3 text-center transition-all duration-200 shadow-lg hover:shadow-xl"
                     type="submit"
                   >
                     Update Product
@@ -247,11 +250,14 @@ const UpdateProduct = () => {
             </div>
           </div>
           {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="Image Preview"
-              className="mt-7 w-[20%] h-[20%] border-2 p-4 rounded"
-            />
+            <div className="bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Current Image</h3>
+              <img
+                src={Array.isArray(imagePreview) ? imagePreview[0] : imagePreview}
+                alt="Image Preview"
+                className="w-full max-w-xs h-auto object-cover border-2 border-gray-200 p-4 rounded-xl shadow-md"
+              />
+            </div>
           )}
         </div>
       </div>

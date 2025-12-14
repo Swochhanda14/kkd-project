@@ -115,10 +115,10 @@ const ProductDisplay = (props) => {
     };
 
     return (
-        <div className="bg-gray-50 py-16">
+        <div className="bg-gradient-to-br from-gray-50 to-orange-50/20 py-12 md:py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Product Section */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white p-10 rounded-lg shadow-xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 bg-white p-6 md:p-10 rounded-2xl shadow-soft border border-gray-100">
 
                     {/* Product Image Section */}
                     <div className="flex flex-col space-y-6">
@@ -155,14 +155,27 @@ const ProductDisplay = (props) => {
                     <div className="flex flex-col justify-between space-y-8">
                         {/* Product Title & Price */}
                         <div className="space-y-4">
-                            <h1 className="text-4xl font-bold text-gray-800">{product.name}</h1>
-                            <p className="text-2xl text-red-600 font-semibold">
-                                Rs. {product.new_price}
-                                <span className="line-through text-gray-500 ml-4 text-lg">Rs. {product.old_price}</span>
-                            </p>
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 leading-tight">{product.name}</h1>
+                            <div className="flex items-baseline gap-4">
+                                <p className="text-3xl md:text-4xl text-orange-600 font-extrabold">
+                                    Rs. {product.new_price}
+                                </p>
+                                {product.old_price && product.old_price > product.new_price && (
+                                    <span className="line-through text-gray-400 text-xl font-medium">
+                                        Rs. {product.old_price}
+                                    </span>
+                                )}
+                                {product.old_price && product.old_price > product.new_price && (
+                                    <span className="px-3 py-1 bg-red-100 text-red-600 text-sm font-bold rounded-full">
+                                        {Math.round(((product.old_price - product.new_price) / product.old_price) * 100)}% OFF
+                                    </span>
+                                )}
+                            </div>
 
                             {/* Rating Section */}
-                            <Rating value={product.rating} text={`${product.numReviews} reviews`} />
+                            <div className="pt-2">
+                                <Rating value={product.rating} text={`${product.numReviews} reviews`} />
+                            </div>
                         </div>
 
                         {/* Product Description */}
@@ -205,7 +218,7 @@ const ProductDisplay = (props) => {
                         {/* Add to Cart Button */}
                         <button
                             onClick={handleAddToCart}
-                            className="bg-black text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-gray-800 hover:shadow-lg transition duration-300"
+                            className="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-4 px-8 rounded-xl text-lg font-bold hover:from-orange-700 hover:to-red-700 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl"
                             >
                             Add to Cart
                         </button>

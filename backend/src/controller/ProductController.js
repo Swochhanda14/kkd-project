@@ -51,10 +51,10 @@ class ProductController {
                 let size = [];
                 if (productData.size) {
                     if (Array.isArray(productData.size)) {
-                        size = productData.size;
+                        size = productData.size.filter(s => s && s.trim());
                     } else if (typeof productData.size === 'string') {
                         // If comma separated string, split
-                        size = productData.size.split(',').map(s => s.trim());
+                        size = productData.size.split(',').map(s => s.trim()).filter(s => s);
                     }
                 }
                 const newProduct = await Product.create({ ...productData, image: images, size });
@@ -107,22 +107,35 @@ class ProductController {
         try {
             let id = req.params.id;
             let product = await Product.findById(id);
-            let images = product.image;
+            
+            if (!product) {
+                return res.status(404).json({ message: "Product not found" });
+            }
+            
+            let images = product.image || [];
             // Ensure size is always an array if provided
             let size = product.size || [];
             if (req.body.size) {
                 if (Array.isArray(req.body.size)) {
                     size = req.body.size;
                 } else if (typeof req.body.size === 'string') {
-                    size = req.body.size.split(',').map(s => s.trim());
+                    size = req.body.size.split(',').map(s => s.trim()).filter(s => s);
                 }
             }
+            
+            // Only update images if new files are uploaded
             if (req.files && req.files.length > 0) {
                 images = req.files.map(file => file.filename);
             } else if (req.file) {
                 images = [req.file.filename];
             }
-            await Product.findByIdAndUpdate(id, { ...req.body, image: images, size });
+            
+            // Prepare update data
+            const updateData = { ...req.body };
+            updateData.image = images;
+            updateData.size = size;
+            
+            await Product.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
             res.status(200).json({ success: true });
         } catch (err) {
             res.status(500).json({ message: err.message });
