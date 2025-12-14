@@ -1,88 +1,63 @@
-import React from 'react'
-import logo from '../Assets/logo.png'
-import insta_icon from '../Assets/instagram_icon.png'
-import pin_icon from '../Assets/pintester_icon.png'
-import whats_icon from '../Assets/whatsapp_icon.png'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { FaInstagram, FaPinterest, FaWhatsapp } from 'react-icons/fa';
 
 const Footer = () => {
-    return (
-        // <div className='pt-10 my-5 flex flex-col items-center gap-5 border-t-2'>
-        //     <div className='h-20 flex items-center gap-5'>
-        //         <img src="https://logosmarcas.net/wp-content/uploads/2020/12/Batman-Logo.png" alt="" className='h-full' />
-        //         <p className='text-4xl font-bold font-[Poppins]'>GYMNASIA</p>
-        //     </div>
-        //     <ul className='flex justify-evenly w-1/3 hover:cursor-pointer tracking-wider'>
-        //         <li>Company</li>
-        //         <li>Products</li>
-        //         <li>About</li>
-        //         <li>Contact</li>
-        //     </ul>
-        //     <div className='flex gap-8 mt-3'>
-        //         <div className='hover:cursor-pointer hover:scale-105 transition-all'>
-        //             <img src={insta_icon} alt="" />
-        //         </div>
-        //         <div className='hover:cursor-pointer hover:scale-105 transition-all'>
-        //             <img src={pin_icon} alt="" />
-        //         </div>
-        //         <div className='hover:cursor-pointer hover:scale-105 transition-all'>
-        //             <img src={whats_icon} alt="" />
-        //         </div>
-        //     </div>
-        //     <div className='mt-5 w-full flex flex-col gap-5 items-center'>
-        //         <hr className='w-[70%] h-[2px] bg-gray-500 rounded-full border-0' />
-        //         <p>Copyright &copy; 2024 - All Rights Reserved</p>
-        //     </div>
-        // </div>
-        <div className='bg-gray-200 pt-12'>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div>
-                        <div className='inline-flex items-center gap-3'>
-                            <img src="https://logosmarcas.net/wp-content/uploads/2020/12/Batman-Logo.png" alt="" className='h-[3rem]' />
-                            <h2 class="text-xl font-bold mb-4 tracking-wide">GYMNASIA</h2>
-                        </div>
-                        <p class="text-gray-600">
-                            The best place to find luxurious gym accessories. Elevate your fitness game with Gymnasia essentials.
-                        </p>
-                        <div class="mt-4">
-                            <a href="#" class="text-gray-600 hover:text-red-600">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="ml-4 text-gray-600 hover:text-red-600">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="ml-4 text-gray-600 hover:text-red-600">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h2 class="text-xl font-bold mb-4">Quick Links</h2>
-                        <ul>
-                            <li><a href="#" class="text-gray-600 hover:text-red-600 block mb-2">Home</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-red-600 block mb-2">Shop</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-red-600 block mb-2">About Us</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-red-600 block mb-2">Contact Us</a></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h2 class="text-xl font-bold mb-4">Contact Us</h2>
-                        <ul>
-                            <li class="text-gray-600 mb-2">Email: info@gymnasia.com</li>
-                            <li class="text-gray-600 mb-2">Phone: +977 984-3340949</li>
-                            <li class="text-gray-600">Address: 123 Fitness Ave, Workout City</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="mt-8 border-t border-gray-700 p-6 text-center text-sm">
-                    <p class="text-gray-600">&copy; 2024 Gymnasia. All rights reserved.</p>
-                </div>
-            </div>
+  return (
+    <footer className="bg-gradient-to-r from-orange-800 to-red-700 text-white mt-16">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
+        {/* Brand Info */}
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <h2 className="text-2xl font-bold">Karigar Ko Dukaan</h2>
+          </div>
+          <p className="text-sm text-white">
+            Celebrating tradition through authentic, handmade art from the heart of Nepal.
+          </p>
         </div>
-    )
-}
 
-export default Footer
+        {/* Navigation Links */}
+        <div>
+          <h3 className="text-xl font-semibold mb-3">Quick Links</h3>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/" className="hover:text-white">Home</Link></li>
+            <li><Link to="/masks" className="hover:text-white">Shop</Link></li>
+            <li><Link to="/about" className="hover:text-white">About Us</Link></li>
+            <li><Link to="/contact" className="hover:text-white">Contact</Link></li>
+          </ul>
+        </div>
+
+        {/* Newsletter */}
+        <div>
+          <h3 className="text-xl font-semibold mb-3">Newsletter</h3>
+          <p className="text-sm mb-3">Subscribe for updates and offers.</p>
+          <div className="flex">
+            <input type="email" placeholder="Your email" className="px-3 py-2 rounded-l-md text-black w-full outline-none" />
+            <button className="bg-white text-orange-800 px-4 py-2 rounded-r-md font-semibold hover:bg-orange-100 transition">Subscribe</button>
+          </div>
+        </div>
+
+        {/* Contact / Socials */}
+        <div>
+          <h3 className="text-xl font-semibold mb-3">Stay Connected</h3>
+          <p className="text-sm mb-2">Email: info@karigarkodukaan.com</p>
+          <p className="text-sm mb-2">Phone: +977 984-3340949</p>
+          <p className="text-sm">Address: 123 Karigar Ave,Handicraft City</p>
+          <div className="flex gap-4 mt-4 text-lg">
+            <a href="#" className="hover:text-white"><FaInstagram /></a>
+            <a href="#" className="hover:text-white"><FaPinterest /></a>
+            <a href="#" className="hover:text-white"><FaWhatsapp /></a>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-white/20">
+        <div className="text-center text-sm py-6">
+          &copy; {new Date().getFullYear()} Karigar Ko Dukaan. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

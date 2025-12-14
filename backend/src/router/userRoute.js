@@ -1,15 +1,31 @@
-import express from 'express'
+import express from 'express';
 import UserController from '../controller/UserController.js';
+import { protect, admin } from '../middleware/AuthMiddleware.js';
 
-const userRouter=express.Router();
-const uInstance=new UserController();
+const router = express.Router();
+const uInstance = new UserController();
 
-userRouter.get('/:id',uInstance.show);
-userRouter.get('/',uInstance.index);
-userRouter.post('/',uInstance.store);
-userRouter.post('/search',uInstance.searchByEmail);
-userRouter.put('/:id',uInstance.update);
-userRouter.delete('/:id',uInstance.destroy);
+// Route for user registration (public)
+router.route('/').post(uInstance.store).get(uInstance.index);
 
+// Login and logout
+router.post('/login', uInstance.authUser);
+router.post('/logout', uInstance.logoutUser);
 
-export default userRouter;
+// Profile routes (for logged-in users)
+router
+  .route('/profile')
+  .get(protect, uInstance.getUserProfile)
+  .put(protect, uInstance.updateUserProfile);
+
+// Search by email (custom endpoint)
+router.post('/search', uInstance.searchByEmail);
+
+// Admin-only routes for managing users by ID
+router
+  .route('/:id')
+  .delete(protect, admin, uInstance.destroy)
+  .get(protect, admin, uInstance.show)
+  .put(protect, admin, uInstance.update);
+
+export default router;

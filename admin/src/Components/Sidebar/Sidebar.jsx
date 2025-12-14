@@ -7,6 +7,9 @@ const Sidebar = () => {
       <div className="hidden md:flex flex-col w-64 bg-gray-800">
         <div className="flex flex-col flex-1 overflow-y-auto">
             <nav className="flex-1 px-2 py-4 bg-gray-800">
+                <Link to="/Dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-100 hover:bg-gray-700">
+                <i className="fa-solid fa-tachometer"></i>Dashboard
+                </Link>
                 <Link to="/list" className="flex items-center gap-3 px-4 py-2 text-gray-100 hover:bg-gray-700">
                 <i className="fa-solid fa-list"></i>Product List
                 </Link>

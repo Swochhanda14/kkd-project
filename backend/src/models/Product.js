@@ -3,6 +3,32 @@ import dotenv from 'dotenv'
 
 dotenv.config();
 
+const reviewSchema = mongoose.Schema({
+    user:{
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "User"
+    },
+    name:{
+        type: String,
+        required: true
+    },
+    rating:{
+        type: Number,
+        required: true
+    },
+    sentimentScore: {
+        type: Number,
+        default: 0
+    },
+    comment:{
+        type: String,
+        required: true
+    },
+},{
+    timestamps: true,
+})
+
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -12,10 +38,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    image: {
+    image: [{
         type: String,
         // required: true
-    },
+    }],
     new_price: {
         type: Number,
         required: true
@@ -32,6 +58,17 @@ const productSchema = new mongoose.Schema({
         type:String,
         // required: true   
     },
+    reviews:[reviewSchema],
+    rating:{
+        type: Number,
+        required: true,
+        default:0
+    },
+    numReviews:{
+        type: Number,
+        required: true,
+        default:0
+    },
     date: {
         type: Date,
         default: Date.now
@@ -39,7 +76,10 @@ const productSchema = new mongoose.Schema({
     available: {
         type: Boolean,
         default: true
-    }
+    },
+    size: [{
+        type: String
+    }]
 }, {
     versionKey: false
 
@@ -47,12 +87,18 @@ const productSchema = new mongoose.Schema({
 
 productSchema.methods.toJSON = function () {
     var obj = this.toObject();
-    if (obj.image) {
-        obj.image = process.env.PUBLIC_URL + "/products/" + obj.image;
+    // Always return image as an array
+    if (Array.isArray(obj.image)) {
+        if (obj.image.length > 0) {
+            obj.image = obj.image.map(img => process.env.PUBLIC_URL + "/products/" + img);
+        } else {
+            obj.image = [process.env.PUBLIC_URL + "/icons/notFound.png"];
+        }
+    } else if (typeof obj.image === 'string' && obj.image) {
+        obj.image = [process.env.PUBLIC_URL + "/products/" + obj.image];
     } else {
-        obj.image = process.env.PUBLIC_URL + "/icons/notFound.png"
+        obj.image = [process.env.PUBLIC_URL + "/icons/notFound.png"];
     }
-
     return obj;
 }
 

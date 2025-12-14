@@ -24,6 +24,7 @@ class UploadMiddleware{
                 cb(null, imageName)
             }
         });
+        // Allow multiple file uploads
         return multer({storage: this.storage});
     }
 }

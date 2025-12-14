@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logo from '../Components/Assets/logo_white.png';
+import logo from '/logo.png';
 import API from '../API';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ const Login = () => {
       const res = await API.post('/admin/search', { email, password });
       
       if (res.data === 'success') {
-        navigate('/list');
+        navigate('/dashboard');
       } else {
         setError(res.data); 
       }
@@ -32,7 +32,7 @@ const Login = () => {
       <main className="mx-auto flex flex-col gap-20 min-h-screen w-full items-center bg-gray-900 text-white">
         <div className="m-20 h-10 flex items-center gap-3">
           <img src={logo} alt="" className="h-full" />
-          <p className="text-white font-semibold text-2xl font-[Poppins]">KickFlip Kingdom</p>
+          <p className="text-white font-semibold text-2xl font-[Poppins]">Karigar Ko Dukaan</p>
         </div>
         {error && <div className="text-red-500 text-center">{error}</div>}
         <form onSubmit={handleSubmit} className="flex w-[30rem] flex-col space-y-10">

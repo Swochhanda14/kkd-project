@@ -6,21 +6,46 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [products, setProduct] = useState([]);
 
-  // Fetch orders data from the backend
   useEffect(() => {
-    API.get('/order').then(res => {
-      setOrders(res.data);
-    });
-
+    fetchOrders();
     API.get('/product').then(res => {
       setProduct(res.data);
     });
   }, []);
 
+  const fetchOrders = () => {
+    API.get('/order').then(res => {
+      setOrders(res.data);
+    });
+  };
+
+  const handleComplete = async (id) => {
+    try {
+      await API.put(`/order/${id}`, { status: 'complete' });
+      alert('Order marked as complete.');
+      fetchOrders();
+    } catch (error) {
+      console.error('Error completing order:', error);
+      alert('Failed to complete order.');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await API.delete(`/order/${id}`);
+      alert('Order deleted successfully.');
+      fetchOrders();
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      alert('Failed to delete order.');
+    }
+  };
+
   const getProductName = (proId) => {
     const product = products.find((prod) => prod._id === proId);
     return product ? product.name : "unknown";
   };
+
   const getProductImage = (proId) => {
     const product = products.find((prod) => prod._id === proId);
     return product ? product.image : "unknown";
@@ -35,32 +60,47 @@ const Orders = () => {
           <table className="w-full rounded-xl">
             <thead>
               <tr className="bg-gray-50">
-                <th scope="col" className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize rounded-t-xl">Order No.</th>
-                <th scope="col" className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize">Image</th>
-                <th scope="col" className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize">Product</th>
-                <th scope="col" className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize">Quantity</th>
-                <th scope="col" className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize">Price</th>
-                <th scope="col" className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize rounded-t-xl">Ordered By</th>
+                <th className="p-5 text-left text-sm font-semibold text-gray-900">Order No.</th>
+                <th className="p-5 text-left text-sm font-semibold text-gray-900">Image</th>
+                <th className="p-5 text-left text-sm font-semibold text-gray-900">Product</th>
+                <th className="p-5 text-left text-sm font-semibold text-gray-900">Quantity</th>
+                <th className="p-5 text-left text-sm font-semibold text-gray-900">Price</th>
+                <th className="p-5 text-left text-sm font-semibold text-gray-900">Ordered By</th>
+                <th className="p-5 text-left text-sm font-semibold text-gray-900">Status</th>
+                <th className="p-5 text-left text-sm font-semibold text-gray-900">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-300">
-              {orders.map((order, i) => (
-                <tr className="bg-white transition-all duration-500 hover:bg-gray-50" key={order._id}>
-                  <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">{order._id}</td>
-                  <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+              {orders.map((order) => (
+                <tr key={order._id} className="bg-white hover:bg-gray-50">
+                  <td className="p-5">{order._id}</td>
+                  <td className="p-5">
                     <img src={getProductImage(order.productId)} className='w-12' alt="" />
                   </td>
-                  <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                    {getProductName(order.productId)}
+                  <td className="p-5">{getProductName(order.productId)}</td>
+                  <td className="p-5">{order.quantity}</td>
+                  <td className="p-5">{order.price}</td>
+                  <td className="p-5">{order.orderedBy}</td>
+                  <td className="p-5">
+                    <span className={`px-3 py-1 rounded ${order.status === 'complete' ? 'bg-green-200 text-green-700' : 'bg-yellow-200 text-yellow-700'}`}>
+                      {order.status || 'pending'}
+                    </span>
                   </td>
-                  <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                    {order.quantity}
-                  </td>
-                  <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                    {order.price}
-                  </td>
-                  <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                    {order.orderedBy}
+                  <td className="p-5 flex gap-3">
+                    {order.status !== 'complete' && (
+                      <button 
+                        className="px-3 py-2 bg-green-500 text-white rounded" 
+                        onClick={() => handleComplete(order._id)}
+                      >
+                        Complete
+                      </button>
+                    )}
+                    <button 
+                      className="px-3 py-2 bg-red-500 text-white rounded" 
+                      onClick={() => handleDelete(order._id)}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -12,21 +12,32 @@ const Product = () => {
   const [product,setProduct]=useState([]);
   const [related, setRelated] = useState([])
 
-  useEffect(()=>{
-    API.get(`/product/${productId}`).then(res=>{
+  useEffect(() => {
+    API.get(`/product/${productId}`).then(res => {
       setProduct(res.data);
-    })
-
-    API.get('/product/related').then(res=>{
-      setRelated(res.data)
-    })
-  },[])
+      // Set page title to product name if available
+      if (res.data && res.data.name) {
+        document.title = `${res.data.name} | Karigar Ko Dukaan`;
+      } else {
+        document.title = 'Product | Karigar Ko Dukaan';
+      }
+      // Fetch related products by categoryId after product is loaded
+      if (res.data && res.data.categoryId) {
+        const categoryId = res.data.categoryId;
+        API.get(`/product/related?categoryId=${encodeURIComponent(categoryId)}`).then(r => {
+          setRelated(r.data);
+        });
+      } else {
+        setRelated([]);
+      }
+    });
+  }, [productId])
 
   return (
     <div>
       <Breadcrums product={product}/>
       <ProductDisplay product={product}/>
-      {/* <DescriptionBox product={product} /> */}
+      <DescriptionBox product={product} />
       <RelatedProducts product={related}/>
     </div>
   )

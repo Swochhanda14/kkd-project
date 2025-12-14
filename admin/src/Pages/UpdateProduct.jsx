@@ -19,6 +19,8 @@ const UpdateProduct = () => {
   const [product, setProduct] = useState(initialProductState);
   const [categories, setCategory] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
+  const [sizes, setSizes] = useState([]);
+  const [sizeInput, setSizeInput] = useState("");
 
   const inputChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -40,7 +42,15 @@ const UpdateProduct = () => {
     API.get(`/product/${id}`)
       .then((res) => {
         setProduct(res.data);
-        setImagePreview(res.data.image); 
+        setImagePreview(res.data.image);
+        // Set sizes if available
+        if (Array.isArray(res.data.size)) {
+          setSizes(res.data.size);
+        } else if (typeof res.data.size === 'string') {
+          setSizes(res.data.size.split(',').map(s => s.trim()));
+        } else {
+          setSizes([]);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -71,6 +81,9 @@ const UpdateProduct = () => {
     if (product.image) {
       formData.append('image', product.image);
     }
+    if (sizes.length > 0) {
+      formData.append('size', sizes.join(','));
+    }
 
     API.put(`/product/${id}`, formData)
       .then((res) => {
@@ -82,6 +95,18 @@ const UpdateProduct = () => {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const handleAddSize = (e) => {
+    e.preventDefault();
+    const value = sizeInput.trim();
+    if (value && !sizes.includes(value)) {
+      setSizes([...sizes, value]);
+      setSizeInput("");
+    }
+  };
+  const handleRemoveSize = (size) => {
+    setSizes(sizes.filter(s => s !== size));
   };
 
   return (
@@ -170,6 +195,32 @@ const UpdateProduct = () => {
                         className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
                         onChange={handleImageChange}
                       />
+                    </div>
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="sizes" className="text-sm font-medium text-gray-900 block mb-2">Sizes</label>
+                    <div className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        id="sizes"
+                        value={sizeInput}
+                        onChange={e => setSizeInput(e.target.value)}
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                        placeholder="Enter size (e.g. S, M, L, XL)"
+                      />
+                      <button
+                        onClick={handleAddSize}
+                        className="bg-cyan-600 text-white px-3 py-2 rounded-lg hover:bg-cyan-700"
+                        type="button"
+                      >Add</button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {sizes.map((size, idx) => (
+                        <span key={idx} className="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full flex items-center">
+                          {size}
+                          <button type="button" className="ml-2 text-red-500 hover:text-red-700" onClick={() => handleRemoveSize(size)}>&times;</button>
+                        </span>
+                      ))}
                     </div>
                   </div>
                   <div className="col-span-full">

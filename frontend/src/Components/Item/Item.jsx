@@ -1,23 +1,36 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Rating from '../Rating';
 
 const Item = (props) => {
   return (
     <Link to={`/product/${props.id}`}>
-      <div onClick={window.scrollTo(0, 0)} className='w-[350px] h-[500px] hover:scale-105 transition-all hover:cursor-pointer border hover:shadow-lg rounded-md'>
-        <div className='p-5'><img src={props.image} alt="" /></div>
-        <p className='mx-4 mt-5 font-medium '>{props.name}</p>
-        <div className='flex gap-5 mx-4 mt-2 items-end'>
-          <div className='text-red-500 text-lg font-medium'>
-            Rs.{props.new_price}
-          </div>
-          <div className='text-gray-500 line-through text-lg font-medium'>
-            Rs.{props.old_price}
+      <div
+        onClick={() => window.scrollTo(0, 0)}
+        className="bg-white shadow-lg rounded-2xl overflow-hidden max-w-sm mx-auto hover:scale-105 transition-transform duration-300 border border-gray-100 hover:border-orange-300"
+      >
+        <img
+          src={Array.isArray(props.image) ? props.image[0] : props.image}
+          alt={props.name}
+          className="w-full h-64 object-cover"
+        />
+        <div className="p-4">
+          <h1 className="text-xl font-semibold mb-1 truncate">{props.name}</h1>
+          <Rating value={props.rating} text={`${props.numReviews} reviews`} />
+          {/* Optional: add category or description here if available */}
+          <div className="flex gap-4 items-end">
+            <p className="text-lg font-bold text-amber-700">
+              Rs. {props.new_price}
+            </p>
+            <p className="text-gray-500 line-through text-lg font-medium">
+              Rs. {props.old_price}
+            </p>
           </div>
         </div>
       </div>
+    
     </Link>
-  )
-}
+  );
+};
 
-export default Item
+export default Item;

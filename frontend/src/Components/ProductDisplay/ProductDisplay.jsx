@@ -67,11 +67,40 @@
 
 import React, { useContext, useState } from 'react';
 import { ShopContext } from '../../Context/ShopContext';
+import Rating from '../Rating';
 
 const ProductDisplay = (props) => {
     const { product } = props;
     const { addToCart } = useContext(ShopContext);
     const [quantity, setQuantity] = useState(1);
+    const [mainImage, setMainImage] = useState();
+    const [selectedSize, setSelectedSize] = useState("");
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    React.useEffect(() => {
+        if (Array.isArray(product.image) && product.image.length > 0) {
+            setMainImage(product.image[0]);
+            setCurrentIndex(0);
+        } else if (typeof product.image === 'string') {
+            setMainImage(product.image);
+            setCurrentIndex(0);
+        }
+    }, [product.image]);
+
+    const handlePrevImage = () => {
+        if (Array.isArray(product.image) && product.image.length > 1) {
+            const newIndex = (currentIndex - 1 + product.image.length) % product.image.length;
+            setMainImage(product.image[newIndex]);
+            setCurrentIndex(newIndex);
+        }
+    };
+    const handleNextImage = () => {
+        if (Array.isArray(product.image) && product.image.length > 1) {
+            const newIndex = (currentIndex + 1) % product.image.length;
+            setMainImage(product.image[newIndex]);
+            setCurrentIndex(newIndex);
+        }
+    };
 
     const handleQuantityChange = (e) => {
         setQuantity(Number(e.target.value));
@@ -79,30 +108,47 @@ const ProductDisplay = (props) => {
 
     const handleAddToCart = () => {
         if (quantity > 0) {
-            addToCart(product._id, quantity);
+            addToCart(product._id, quantity,selectedSize);
         } else {
             console.log('Quantity must be greater than 0');
         }
     };
 
     return (
-        <div className="bg-gray-50 min-h-screen py-16">
+        <div className="bg-gray-50 py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Product Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white p-10 rounded-lg shadow-xl">
 
                     {/* Product Image Section */}
                     <div className="flex flex-col space-y-6">
-                        <div className="w-full h-[550px] bg-gray-100 rounded-lg overflow-hidden">
-                            <img src={product.image} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                        <div className="w-full h-[550px] bg-gray-100 rounded-lg overflow-hidden relative flex items-center justify-center">
+                            {Array.isArray(product.image) && product.image.length > 1 && (
+                                <button onClick={handlePrevImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-2xl rounded-full p-2 shadow z-10">
+                                    &#8592;
+                                </button>
+                            )}
+                            <img src={mainImage} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                            {Array.isArray(product.image) && product.image.length > 1 && (
+                                <button onClick={handleNextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-2xl rounded-full p-2 shadow z-10">
+                                    &#8594;
+                                </button>
+                            )}
                         </div>
-                        {/* Thumbnail Gallery (optional) */}
-                        {/* <div className="grid grid-cols-4 gap-3">
-                            <img src={product.image} alt={product.name} className="border p-1 rounded-lg cursor-pointer hover:border-gray-500 transition duration-300" />
-                            <img src={product.image} alt={product.name} className="border p-1 rounded-lg cursor-pointer hover:border-gray-500 transition duration-300" />
-                            <img src={product.image} alt={product.name} className="border p-1 rounded-lg cursor-pointer hover:border-gray-500 transition duration-300" />
-                            <img src={product.image} alt={product.name} className="border p-1 rounded-lg cursor-pointer hover:border-gray-500 transition duration-300" />
-                        </div> */}
+                        {/* Gallery Thumbnails */}
+                        {Array.isArray(product.image) && product.image.length > 1 && (
+                            <div className="flex gap-3 mt-2">
+                                {product.image.map((img, idx) => (
+                                    <img
+                                        key={idx}
+                                        src={img}
+                                        alt={`Thumbnail ${idx+1}`}
+                                        className={`w-24 h-24 object-cover border-2 p-1 rounded-lg cursor-pointer transition duration-300 ${mainImage === img ? 'border-cyan-600' : 'border-gray-300'}`}
+                                        onClick={() => setMainImage(img)}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Product Details Section */}
@@ -116,28 +162,7 @@ const ProductDisplay = (props) => {
                             </p>
 
                             {/* Rating Section */}
-                            <div className="flex items-center space-x-2">
-                                {/* Rating Stars */}
-                                <div className="flex text-yellow-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                    </svg>
-                                </div>
-                                {/* Rating Value */}
-                                <p className="text-lg font-medium text-gray-700">4.0/5</p>
-                            </div>
+                            <Rating value={product.rating} text={`${product.numReviews} reviews`} />
                         </div>
 
                         {/* Product Description */}
@@ -156,8 +181,26 @@ const ProductDisplay = (props) => {
                                 className="border-2 p-2 w-20 rounded-lg text-center focus:ring-2 focus:ring-blue-500 outline-none transition duration-300"
                                 min="1"
                             />
+                            <p className='text-lg font-medium text-gray-700 capitalize'>{product.quantity} left in stock</p>
                             <p className="text-lg text-gray-600">In Stock</p>
                         </div>
+
+                        {/* Size Selector */}
+                        {Array.isArray(product.size) && product.size.length > 0 && (
+                            <div className="flex items-center space-x-4">
+                                <label className="text-lg font-medium text-gray-800">Size</label>
+                                <select
+                                    value={selectedSize}
+                                    onChange={e => setSelectedSize(e.target.value)}
+                                    className="border-2 p-2 rounded-lg text-center focus:ring-2 focus:ring-blue-500 outline-none transition duration-300"
+                                >
+                                    <option value="" disabled>Select size</option>
+                                    {product.size.map((sz, idx) => (
+                                        <option key={idx} value={sz}>{sz}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
 
                         {/* Add to Cart Button */}
                         <button

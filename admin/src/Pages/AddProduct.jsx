@@ -10,8 +10,10 @@ const AddProduct = () => {
   const [new_price, setNewPrice] = useState("");
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [sizeInput, setSizeInput] = useState("");
 
   const getCategory = () => {
     API.get('/category').then(res => {
@@ -34,9 +36,16 @@ const AddProduct = () => {
     data.append('new_price', new_price);
     data.append('description', description);
     data.append('quantity', quantity);
-    data.append('image', image);
+    // Append all images
+    images.forEach(img => data.append('image', img));
+    // Append sizes as comma separated string
+    if (sizes.length > 0) {
+      data.append('size', sizes.join(','));
+    }
 
-    API.post('/product', data).then(res => {
+    API.post('/product', data, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }).then(res => {
       if (res.data.success) {
         alert("Product Added Successfully");
         setName('');
@@ -45,8 +54,10 @@ const AddProduct = () => {
         setNewPrice('');
         setDescription('');
         setQuantity('');
-        setImage('');
-        setImagePreview('');
+        setImages([]);
+        setImagePreviews([]);
+        setSizes([]);
+        setSizeInput("");
       } else {
         alert("Cannot Add Product");
       }
@@ -56,15 +67,28 @@ const AddProduct = () => {
   }
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImage(file);
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    }
-    reader.readAsDataURL(file);
+    const files = Array.from(e.target.files);
+    setImages(files);
+    // Preview all selected images
+    const previews = files.map(file => {
+      return URL.createObjectURL(file);
+    });
+    setImagePreviews(previews);
   }
+
+  // Handler for adding a size
+  const handleAddSize = (e) => {
+    e.preventDefault();
+    const value = sizeInput.trim();
+    if (value && !sizes.includes(value)) {
+      setSizes([...sizes, value]);
+      setSizeInput("");
+    }
+  };
+  // Handler for removing a size
+  const handleRemoveSize = (size) => {
+    setSizes(sizes.filter(s => s !== size));
+  };
 
   return (
     <div className='flex gap-5'>
@@ -83,6 +107,7 @@ const AddProduct = () => {
                   <div className="col-span-6 sm:col-span-3">
                     <label htmlFor="category" className="text-sm font-medium text-gray-900 block mb-2">Category</label>
                     <select name="category" onChange={(e) => setCategoryId(e.target.value)} id="category" className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
+                      <option value="" disabled selected>Select Category</option>
                       {category && category.map((cat, index) => (
                         <option key={index} value={cat._id}>{cat.cat_name}</option>
                       ))}
@@ -101,7 +126,7 @@ const AddProduct = () => {
                     <input type="number" name="quantity" onChange={(e) => setQuantity(e.target.value)} value={quantity} min={1} className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="" />
                   </div>
                   <div className="col-span-3">
-                    <label htmlFor="image" className="text-sm font-medium text-gray-900 block mb-2">Image</label>
+                    <label htmlFor="image" className="text-sm font-medium text-gray-900 block mb-2">Images</label>
                     <div className='flex gap-5'>
                       <input
                         id="imageInput"
@@ -109,8 +134,35 @@ const AddProduct = () => {
                         name="image"
                         className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
                         onChange={handleImageChange}
+                        multiple
                         required
                       />
+                    </div>
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="sizes" className="text-sm font-medium text-gray-900 block mb-2">Sizes</label>
+                    <div className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        id="sizes"
+                        value={sizeInput}
+                        onChange={e => setSizeInput(e.target.value)}
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                        placeholder="Enter size (e.g. S, M, L, XL)"
+                      />
+                      <button
+                        onClick={handleAddSize}
+                        className="bg-cyan-600 text-white px-3 py-2 rounded-lg hover:bg-cyan-700"
+                        type="button"
+                      >Add</button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {sizes.map((size, idx) => (
+                        <span key={idx} className="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full flex items-center">
+                          {size}
+                          <button type="button" className="ml-2 text-red-500 hover:text-red-700" onClick={() => handleRemoveSize(size)}>&times;</button>
+                        </span>
+                      ))}
                     </div>
                   </div>
                   <div className="col-span-full">
@@ -124,12 +176,17 @@ const AddProduct = () => {
               </form>
             </div>
           </div>
-          {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="Image Preview"
-              className="mt-7 w-[20%] h-[20%] border-2 p-4 rounded"
-            />
+          {imagePreviews.length > 0 && (
+            <div className="mt-7 flex flex-wrap gap-4">
+              {imagePreviews.map((src, idx) => (
+                <img
+                  key={idx}
+                  src={src}
+                  alt={`Preview ${idx+1}`}
+                  className="w-[120px] h-[120px] object-cover border-2 p-2 rounded"
+                />
+              ))}
+            </div>
           )}
         </div>
       </div>

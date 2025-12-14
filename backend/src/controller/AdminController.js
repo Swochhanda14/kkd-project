@@ -37,6 +37,22 @@ class AdminController {
             res.status(500).json({ message: err.message });
         }
     }
+
+    async logout(req, res) {
+        try {
+            // If using sessions, destroy the session here
+            if (req.session) {
+                req.session.destroy(() => {
+                    res.status(200).json({ message: "Logged out successfully" });
+                });
+            } else {
+                // If using JWT or stateless, just respond OK
+                res.status(200).json({ message: "Logged out successfully" });
+            }
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    }
 }
 
 export default AdminController;
