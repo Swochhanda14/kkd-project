@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
-  'http://localhost:5174',
+  process.env.ADMIN_URL || 'http://localhost:5174',
   'http://localhost:3000',
 ];
 
@@ -24,7 +24,9 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+    // Allow explicit origins or any localhost port during development
+    const isLocalhost = /^http:\/\/localhost:\d+$/.test(origin);
+    if (allowedOrigins.includes(origin) || isLocalhost) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));

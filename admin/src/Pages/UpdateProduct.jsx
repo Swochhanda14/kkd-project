@@ -58,11 +58,23 @@ const UpdateProduct = () => {
   }, [id]);
 
   useEffect(() => {
-    API.get('/category').then((res) => {
-      setCategory(res.data);
-    }).catch((err) => {
-      console.log(err);
-    });
+    const desired = ["Masks", "Decor", "Accessories"];
+    API.get('/category')
+      .then((res) => {
+        const all = Array.isArray(res.data) ? res.data : [];
+        const filtered = all.filter(c => desired.includes(c.cat_name));
+        const unique = [];
+        const seen = new Set();
+        for (const c of filtered) {
+          if (!seen.has(c.cat_name)) {
+            unique.push(c);
+            seen.add(c.cat_name);
+          }
+        }
+        setCategory(unique);
+      }).catch((err) => {
+        console.log(err);
+      });
   }, []);
 
 
@@ -85,7 +97,9 @@ const UpdateProduct = () => {
       formData.append('size', sizes.join(','));
     }
 
-    API.put(`/product/${id}`, formData)
+    API.put(`/product/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
       .then((res) => {
         if (res.data.success) {
           alert("Updated Successfully");

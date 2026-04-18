@@ -56,7 +56,7 @@ const Navbar = () => {
             <img src={logo} alt="Karigar Ko Dukaan" className="w-14 h-14 p-1.5 transition-transform duration-300 group-hover:scale-110" />
             <div className="absolute inset-0 bg-white/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
-          <span className="ml-2 text-xl font-bold hidden sm:block font-poppins">Karigar Ko Dukaan</span>
+          
         </Link>
 
         <button

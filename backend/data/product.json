@@ -1,0 +1,9 @@
+{
+  "name": "Sample Incense Sticks",
+  "categoryName": "General",
+  "new_price": 199,
+  "old_price": 249,
+  "quantity": 50,
+  "description": "Aromatic incense sticks suitable for home and meditation.",
+  "size": ["small", "medium"]
+}

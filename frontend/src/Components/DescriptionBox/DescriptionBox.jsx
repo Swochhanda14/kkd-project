@@ -21,18 +21,15 @@ const DescriptionBox = ({ product, refetch }) => {
     e.preventDefault();
     setLoadingReview(true);
     try {
-      await API.post(
-        `/product/${product._id}/reviews`,
-        {
-          rating,
-          comment,
-        },
-        {
-          headers: {
-            Authorization: userInfo?.token ? `Bearer ${userInfo.token}` : undefined,
-          },
-        }
-      );
+      if (!rating || rating < 1 || rating > 5) {
+        throw new Error('Please select a rating between 1 and 5');
+      }
+      const payload = { rating, comment };
+      const config = {};
+      if (userInfo?.token) {
+        config.headers = { Authorization: `Bearer ${userInfo.token}` };
+      }
+      await API.post(`/product/${product._id}/reviews`, payload, config);
       setRating(0);
       setComment('');
       if (refetch) refetch();

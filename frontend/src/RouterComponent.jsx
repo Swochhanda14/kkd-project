@@ -9,6 +9,7 @@ import Cart from "./Pages/Cart"
 import LoginSignup from "./Pages/LoginSignup"
 import Login from './Pages/Login'
 import PaymentSuccess from './Pages/PaymentSuccess'
+import PaymentFailure from './Pages/PaymentFailure'
 import SearchResults from './Pages/SearchResults'
 import About from './Pages/About'
 import Contact from './Pages/Contact'
@@ -63,6 +64,7 @@ const RouterComponent = () => {
           <Route path="/loginsignup" element={<LoginSignup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/success" element={<PaymentSuccess />} />
+          <Route path="/failure" element={<PaymentFailure />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

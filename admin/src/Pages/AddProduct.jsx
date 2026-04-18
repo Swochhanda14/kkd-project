@@ -21,11 +21,30 @@ const AddProduct = () => {
 
   const getCategory = () => {
     setLoadingCategories(true);
-    API.get('/category').then(res => {
-      setCategory(res.data);
+    const desired = ["Masks", "Decor", "Accessories"];
+    API.get('/category').then(async res => {
+      let cats = Array.isArray(res.data) ? res.data : [];
+      const names = new Set(cats.map(c => c.cat_name));
+      for (const name of desired) {
+        if (!names.has(name)) {
+          try {
+            await API.post('/category', { cat_name: name });
+          } catch {}
+        }
+      }
+      const finalRes = await API.get('/category');
+      const filtered = (finalRes.data || []).filter(c => desired.includes(c.cat_name));
+      const unique = [];
+      const seen = new Set();
+      for (const c of filtered) {
+        if (!seen.has(c.cat_name)) {
+          unique.push(c);
+          seen.add(c.cat_name);
+        }
+      }
+      setCategory(unique);
       setLoadingCategories(false);
     }).catch(err => {
-      console.error(err);
       setError('Failed to load categories');
       setLoadingCategories(false);
     });

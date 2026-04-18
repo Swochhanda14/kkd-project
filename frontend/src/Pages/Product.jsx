@@ -74,7 +74,14 @@ const Product = () => {
     <div>
       <Breadcrums product={product}/>
       <ProductDisplay product={product}/>
-      <DescriptionBox product={product} />
+      <DescriptionBox 
+        product={product} 
+        refetch={() => {
+          API.get(`/product/${productId}`).then(res => {
+            setProduct(res.data);
+          });
+        }} 
+      />
       {loadingRelated ? (
         <div className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-orange-50/20">
           <div className="max-w-7xl mx-auto">

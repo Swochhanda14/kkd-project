@@ -28,8 +28,10 @@ const CartItems = () => {
 
     const message = `total_amount=${totalamount},transaction_uuid=${uid},product_code=EPAYTEST`;
     const esewasecret = import.meta.env.VITE_ESEWASECRET;
-    const hash = CryptoJS.HmacSHA256(message, esewasecret);
-    const signature = CryptoJS.enc.Base64.stringify(hash);
+    const signature = esewasecret
+        ? CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(message, esewasecret))
+        : '';
+    const BACKEND_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4001';
 
     const validateShipping = () => {
         const errors = {};
@@ -59,6 +61,10 @@ const CartItems = () => {
         event.preventDefault();
         if (!userInfo) {
             navigate('/login');
+            return;
+        }
+        if (!esewasecret) {
+            alert('Payment is not configured. Please set VITE_ESEWASECRET in your frontend .env.');
             return;
         }
         setIsProcessing(true);
@@ -167,8 +173,8 @@ const CartItems = () => {
                         <input type="hidden" id="product_code" name="product_code" value="EPAYTEST" required />
                         <input type="hidden" id="product_service_charge" name="product_service_charge" value="0" required />
                         <input type="hidden" id="product_delivery_charge" name="product_delivery_charge" value="0" required />
-                        <input type="hidden" id="success_url" name="success_url" value="http://localhost:5173/success" required />
-                        <input type="hidden" id="failure_url" name="failure_url" value="http://localhost:5173/failure" required />
+                        <input type="hidden" id="success_url" name="success_url" value={`${BACKEND_URL}/order/payment/success`} required />
+                        <input type="hidden" id="failure_url" name="failure_url" value={`${BACKEND_URL}/order/payment/failure`} required />
                         <input type="hidden" id="signed_field_names" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required />
                         <input type="hidden" id="signature" name="signature" value={signature} required />
                     <button
@@ -190,6 +196,11 @@ const CartItems = () => {
                         )}
                     </button>
                     </form>
+                    {!esewasecret && (
+                        <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl text-yellow-800">
+                            Payment is not configured. Please set VITE_ESEWASECRET in your frontend .env and restart the dev server.
+                        </div>
+                    )}
                     {showShippingForm && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 animate-fade-in">
                             <form onSubmit={handleShippingSubmit} className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md animate-scale-in">
