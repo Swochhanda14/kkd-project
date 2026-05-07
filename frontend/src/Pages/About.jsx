@@ -19,7 +19,7 @@ const About = () => {
                     </div>
                     <div className='flex flex-col gap-6 max-w-2xl'>
                         <p className='text-justify text-base lg:text-lg leading-relaxed text-gray-700'>
-                            Welcome to our world of authentic Nepali handicrafts — where every product is more than just an item, it's a piece of living tradition. Our mission is to bring you handcrafted treasures that reflect the soul of Nepal, created by artisans who have honed their skills through generations.
+                            Welcome to to our world of authentic Nepali handicrafts — where every product is more than just an item, it's a piece of living tradition. Our mission is to bring you handcrafted treasures that reflect the soul of Nepal, created by artisans who have honed their skills through generations.
                         </p>
                         <p className='text-justify text-base lg:text-lg leading-relaxed text-gray-700'>
                             From intricately carved wooden masks and traditional textiles to timeless decor and accessories, each piece tells a story of culture, craftsmanship, and care. We work closely with local communities to ensure every item is ethically sourced, sustainably made, and rich with meaning.
